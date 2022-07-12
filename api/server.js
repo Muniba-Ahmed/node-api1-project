@@ -92,6 +92,60 @@ server.delete("/api/users/:id", (req, res) => {
 
 // PUT	/api/users/:id	Updates the user with the specified id using data from the request body. Returns the modified user
 
-server.put("/api/users/:id", (req, res) => {});
+server.put("/api/users/:id", (req, res) => {
+  //   Users.findById(req.params.id).then((user) => {
+  //     if (!user) {
+  //       res
+  //         .status(404)
+  //         .json({ message: "The user with the specified ID does not exist" });
+  //     } else {
+  //       //   res.json(user);
+  //       const body = req.body;
+  //       if (!body.name || !body.bio) {
+  //         res
+  //           .status(400)
+  //           .json({ message: "Please provide name and bio for the user" });
+  //       } else {
+  //         Users.update(body)
+  //           .then((user) => {
+  //             res.status(201).json(user);
+  //           })
+  //           .catch((err) => {
+  //             res.status(500).json({
+  //               message:
+  //                 "There was an error while saving the user to the database",
+  //               err: err.message,
+  //               stack: err.stack,
+  //             });
+  //           });
+  //       }
+  //     }
+  //   });
+
+  let body = req.body;
+  if (!body.name || !body.bio) {
+    res
+      .status(400)
+      .json({ message: "Please provide name and bio for the user" });
+  } else {
+    Users.update(req.params.id, body)
+      .then((user) => {
+        if (!user) {
+          res
+            .status(404)
+            .json({ message: "The user with the specified ID does not exist" });
+        } else {
+          res.json(user);
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "The user information could not be modified",
+          err: err.message,
+          stack: err.stack,
+        });
+      });
+  }
+});
 
 module.exports = server; // EXPORT YOUR SERVER instead of {}
